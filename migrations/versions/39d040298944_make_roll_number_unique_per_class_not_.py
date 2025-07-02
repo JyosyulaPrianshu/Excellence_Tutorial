@@ -25,7 +25,7 @@ def upgrade():
                existing_server_default=sa.text('0'))
 
     with op.batch_alter_table('profiles', schema=None) as batch_op:
-        batch_op.drop_constraint('roll_number', type_='unique')
+        batch_op.drop_constraint('roll_number', type_='unique', if_exists=True)
         batch_op.create_unique_constraint('uix_class_roll', ['student_class', 'roll_number'])
 
     # ### end Alembic commands ###

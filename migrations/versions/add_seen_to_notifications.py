@@ -11,7 +11,7 @@ revision = 'add_seen_to_notifications'
 down_revision = 'add_class_for_to_notifications'
 
 def upgrade():
-    op.add_column('notifications', sa.Column('seen', sa.Boolean(), nullable=False, server_default=sa.text('0')))
+    op.add_column('notifications', sa.Column('seen', sa.Boolean(), nullable=False, server_default=sa.text('FALSE')))
 
 def downgrade():
     op.drop_column('notifications', 'seen') 

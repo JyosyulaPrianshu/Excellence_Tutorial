@@ -142,6 +142,7 @@ def create_admin_from_env():
     ]
     from app import db
     from app.models import User
+    from werkzeug.security import generate_password_hash
     for email, password in admins:
         if not email or not password:
             print(f'Skipping: ADMIN_EMAIL or ADMIN_PASSWORD not set for one of the admins.')

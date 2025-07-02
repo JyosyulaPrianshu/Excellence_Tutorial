@@ -3,19 +3,15 @@ import os
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY', '2b1e7e2c-8c7e-4e2e-9b7a-1f3e4c5d6a7b')
     
-    # PostgreSQL Database Configuration for Render
+    # Use DATABASE_URL from environment for PostgreSQL
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
     if SQLALCHEMY_DATABASE_URI and SQLALCHEMY_DATABASE_URI.startswith('postgres://'):
         SQLALCHEMY_DATABASE_URI = SQLALCHEMY_DATABASE_URI.replace('postgres://', 'postgresql://', 1)
     
-    # Fallback to SQLite for local development
-    if not SQLALCHEMY_DATABASE_URI:
-        SQLALCHEMY_DATABASE_URI = 'sqlite:///local.db'
-    
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
     # PostgreSQL-specific settings (only for PostgreSQL)
-    if SQLALCHEMY_DATABASE_URI.startswith('postgresql://'):
+    if SQLALCHEMY_DATABASE_URI and SQLALCHEMY_DATABASE_URI.startswith('postgresql://'):
         SQLALCHEMY_ENGINE_OPTIONS = {
             'pool_size': 10,
             'pool_timeout': 20,

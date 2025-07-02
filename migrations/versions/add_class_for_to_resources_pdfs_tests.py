@@ -11,6 +11,8 @@ revision = 'add_class_for_to_resources_pdfs_tests'
 down_revision = 'e149e87de828'
 
 def upgrade():
+    # Ensure alembic_version.version_num can store long revision IDs
+    op.execute("ALTER TABLE alembic_version ALTER COLUMN version_num TYPE VARCHAR(50);")
     op.add_column('resources', sa.Column('class_for', sa.String(length=20), nullable=False, server_default='all'))
     op.add_column('pdfs', sa.Column('class_for', sa.String(length=20), nullable=False, server_default='all'))
     op.add_column('tests', sa.Column('class_for', sa.String(length=20), nullable=False, server_default='all'))

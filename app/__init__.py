@@ -139,10 +139,6 @@ def create_app():
     def load_user(user_id):
         return User.query.get(int(user_id))
 
-    # Automatically create admin user from environment on startup
-    with app.app_context():
-        create_admin_from_env()
-
     # Register blueprints
     from app.routes.student import student_bp
     from app.routes.admin import admin_bp

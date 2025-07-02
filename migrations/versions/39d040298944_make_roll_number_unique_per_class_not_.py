@@ -25,7 +25,20 @@ def upgrade():
                existing_server_default=sa.text('0'))
 
     with op.batch_alter_table('profiles', schema=None) as batch_op:
-        batch_op.drop_constraint('roll_number', type_='unique', if_exists=True)
+        # Drop the constraint only if it exists (PostgreSQL)
+        batch_op.execute(
+            sa.text('''
+            DO $$
+            BEGIN
+                IF EXISTS (
+                    SELECT 1 FROM pg_constraint WHERE conname = 'roll_number'
+                ) THEN
+                    ALTER TABLE profiles DROP CONSTRAINT roll_number;
+                END IF;
+            END
+            $$;
+            ''')
+        )
         batch_op.create_unique_constraint('uix_class_roll', ['student_class', 'roll_number'])
 
     # ### end Alembic commands ###

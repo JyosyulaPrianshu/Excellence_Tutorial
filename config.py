@@ -48,4 +48,8 @@ class Config:
     LOG_LEVEL = os.environ.get('LOG_LEVEL', 'INFO')
     
     # Render-specific settings
-    RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME') 
+    RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+
+    # CSRF: Disable strict referrer checking for uptime monitor and browser compatibility
+    WTF_CSRF_SSL_STRICT = False
+    

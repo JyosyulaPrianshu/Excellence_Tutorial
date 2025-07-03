@@ -25,11 +25,16 @@ class Config:
     UPLOAD_FOLDER = 'app/static/pdfs'
     ALLOWED_EXTENSIONS = {'pdf'}
     
-    # Security settings
-    WTF_CSRF_TIME_LIMIT = 3600  # 1 hour CSRF token expiry
+    # Security settings - No session timeout for uptime monitors
+    PERMANENT_SESSION_LIFETIME = None  # No session timeout
+    WTF_CSRF_TIME_LIMIT = None  # No CSRF token expiry
+    
+    # Session configuration
     SESSION_COOKIE_SECURE = os.environ.get('FLASK_ENV') == 'production'
     SESSION_COOKIE_HTTPONLY = True
     SESSION_COOKIE_SAMESITE = 'Lax'
+    SESSION_COOKIE_MAX_AGE = None  # No cookie max age
+    SESSION_REFRESH_EACH_REQUEST = False  # Don't refresh on each request
     
     # Flask-Mail settings
     MAIL_SERVER = 'smtp.gmail.com'
@@ -44,5 +49,3 @@ class Config:
     
     # Render-specific settings
     RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME') 
-    
-    PERMANENT_SESSION_LIFETIME = 1800  # 30 minutes 

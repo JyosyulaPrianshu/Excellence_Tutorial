@@ -134,9 +134,10 @@ def create_app():
     def set_security_headers(response):
         response.headers['Content-Security-Policy'] = (
             "default-src 'self'; "
-            "script-src 'self'; "
-            "style-src 'self'; "
-            "img-src 'self'; "
+            "script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdn.socket.io; "
+            "style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; "
+            "img-src 'self' data: https://images.unsplash.com https://ui-avatars.com; "
+            "font-src 'self' https://cdnjs.cloudflare.com;"
         )
         response.headers['X-Frame-Options'] = 'DENY'
         response.headers['X-Content-Type-Options'] = 'nosniff'

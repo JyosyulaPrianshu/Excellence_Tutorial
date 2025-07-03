@@ -4,11 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- Tailwind CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/tailwind.min.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/all.min.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <!-- Animate.css -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/animate.min.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <!-- Custom CSS -->
     <style>
       /* Ensure full dark gray background */
@@ -103,6 +103,25 @@
       .card-container {
         background: rgba(255, 255, 255, 0.95);
         backdrop-filter: blur(10px);
+      }
+      
+      /* Custom input style (for dark fields) */
+      input, select, textarea {
+        background: #23263a !important;
+        color: #e0e6f7 !important;
+        border: 1.5px solid #7f5af0 !important;
+        border-radius: 0.7em !important;
+        padding: 0.6em 1em !important;
+        font-size: 1em !important;
+      }
+      input:focus, select:focus, textarea:focus {
+        border: 1.5px solid #b7bfff !important;
+        background: #181c24 !important;
+        color: #fff !important;
+      }
+      ::placeholder {
+        color: #b7bfff !important;
+        opacity: 1 !important;
       }
     </style>
   </head>

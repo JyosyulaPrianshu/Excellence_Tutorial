@@ -25,8 +25,20 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
-    # Set session timeout
-    app.permanent_session_lifetime = timedelta(seconds=app.config.get('PERMANENT_SESSION_LIFETIME', 1800))
+    # Session configuration - No timeout for uptime monitors
+    if app.config.get('PERMANENT_SESSION_LIFETIME') is None:
+        # Set a very long session lifetime (1 year) instead of None
+        app.permanent_session_lifetime = timedelta(days=365)
+    else:
+        app.permanent_session_lifetime = timedelta(seconds=app.config.get('PERMANENT_SESSION_LIFETIME', 86400))
+    
+    # Ensure session configuration is properly set
+    if app.config.get('SESSION_COOKIE_SECURE') and not app.config.get('TESTING'):
+        # In production, ensure HTTPS is used
+        app.config['SESSION_COOKIE_SECURE'] = True
+    else:
+        # In development, allow HTTP
+        app.config['SESSION_COOKIE_SECURE'] = False
 
     # Configure logging
     if not app.debug and not app.testing:

@@ -53,6 +53,7 @@ def signup():
         reg_no = f"E.T.{class_code}({profile.id:03d})"
         profile.reg_no = reg_no
         db.session.commit()
+        
         flash('Signup successful! Please log in.', 'success')
         return redirect(url_for('student.login'))
     return render_template('shared/signup.html', form=form)

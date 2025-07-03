@@ -15,7 +15,7 @@ admin_bp = Blueprint('admin', __name__)
 @admin_bp.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
-    # if form.validate_on_submit():
+    if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data, is_admin=True).first()
         if user and check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)

@@ -5,7 +5,7 @@ from app.models import User, Profile, PDF, Notification, Test, Mark, Fee, Paymen
 from app.forms import StudentSignupForm, LoginForm, StudentTestUpdateForm, PasswordResetRequestForm, PasswordResetForm
 from app import db, login_manager
 from datetime import datetime, timedelta
-from flask_wtf.csrf import generate_csrf
+from flask_wtf.csrf import generate_csrf, exempt
 from app.utils import generate_password_reset_token, verify_password_reset_token, send_password_reset_email, get_leaderboard_for_class
 
 student_bp = Blueprint('student', __name__)
@@ -204,6 +204,7 @@ def fee():
 
 @student_bp.route('/cash_payment/<int:fee_id>', methods=['GET', 'POST'])
 @login_required
+@exempt
 def cash_payment(fee_id):
     fee = Fee.query.get_or_404(fee_id)
     
@@ -246,6 +247,7 @@ def cash_payment(fee_id):
 
 @student_bp.route('/upi_payment/<int:fee_id>', methods=['GET', 'POST'])
 @login_required
+@exempt
 def upi_payment(fee_id):
     fee = Fee.query.get_or_404(fee_id)
     # Ensure the fee belongs to the current user
@@ -440,6 +442,7 @@ def resources():
 
 @student_bp.route('/drop_request', methods=['GET', 'POST'])
 @login_required
+@exempt
 def drop_request():
     if current_user.is_admin:
         return redirect(url_for('admin.home1'))

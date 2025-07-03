@@ -3,11 +3,10 @@ from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.security import check_password_hash, generate_password_hash
 from app.models import User, PDF, Notification, Profile, Test, Mark, Fee, Payment, Setting, Resource, DropoutRequest
 from app.forms import LoginForm, AdminPDFUploadForm, AdminNotificationForm, AdminTestUploadForm, PasswordResetRequestForm, PasswordResetForm, AddAdminUserForm, UPISettingsForm, ResourceForm
-from app import db, socketio
+from app import db, socketio, csrf
 from app.utils import get_pending_approvals_count, generate_password_reset_token, verify_password_reset_token, send_password_reset_email, validate_pdf_file, generate_secure_filename, cleanup_old_files, get_leaderboard_for_class, assign_monthly_dues, get_fee_amount_for_class, get_current_time_ist
 import os
 from datetime import datetime, date, timedelta
-from flask_wtf.csrf import exempt
 import pytz
 
 admin_bp = Blueprint('admin', __name__)
@@ -349,7 +348,7 @@ def fee_management():
 
 @admin_bp.route('/add_fee', methods=['POST'])
 @login_required
-@exempt
+@csrf.exempt
 def add_fee():
     if not current_user.is_admin:
         return redirect(url_for('student.home'))
@@ -381,7 +380,7 @@ def add_fee():
 
 @admin_bp.route('/confirm_payment/<int:payment_id>', methods=['POST'])
 @login_required
-@exempt
+@csrf.exempt
 def confirm_payment(payment_id):
     if not current_user.is_admin:
         return redirect(url_for('student.home'))
@@ -441,7 +440,7 @@ def approve():
 
 @admin_bp.route('/notify_student/<int:student_id>', methods=['POST'])
 @login_required
-@exempt
+@csrf.exempt
 def notify_student(student_id):
     if not current_user.is_admin:
         return redirect(url_for('student.home'))
@@ -456,7 +455,7 @@ def notify_student(student_id):
 
 @admin_bp.route('/approve_payment/<int:payment_id>', methods=['POST'])
 @login_required
-@exempt
+@csrf.exempt
 def approve_payment(payment_id):
     if not current_user.is_admin:
         flash('Access denied.', 'error')
@@ -477,7 +476,7 @@ def approve_payment(payment_id):
 
 @admin_bp.route('/reject_payment/<int:payment_id>', methods=['POST'])
 @login_required
-@exempt
+@csrf.exempt
 def reject_payment(payment_id):
     if not current_user.is_admin:
         flash('Access denied.', 'error')
@@ -541,7 +540,7 @@ def feedues():
 
 @admin_bp.route('/dues', methods=['GET', 'POST'])
 @login_required
-@exempt
+@csrf.exempt
 def dues_management():
     if not current_user.is_admin:
         return redirect(url_for('student.home'))
@@ -836,7 +835,7 @@ def test_marks_management():
 
 @admin_bp.route('/edit_mark/<int:mark_id>', methods=['GET', 'POST'])
 @login_required
-@exempt
+@csrf.exempt
 def edit_mark(mark_id):
     if not current_user.is_admin:
         flash('Access denied.', 'error')
@@ -862,7 +861,7 @@ def edit_mark(mark_id):
 
 @admin_bp.route('/delete_mark/<int:mark_id>', methods=['POST'])
 @login_required
-@exempt
+@csrf.exempt
 def delete_mark(mark_id):
     if not current_user.is_admin:
         return redirect(url_for('student.home'))
@@ -947,7 +946,7 @@ def suspicious_activity():
 
 @admin_bp.route('/trigger_monthly_dues', methods=['POST'])
 @login_required
-@exempt
+@csrf.exempt
 def trigger_monthly_dues():
     if not current_user.is_admin:
         return redirect(url_for('student.home'))
@@ -1054,7 +1053,7 @@ def dropouts():
 
 @admin_bp.route('/dropout/<int:request_id>', methods=['GET', 'POST'])
 @login_required
-@exempt
+@csrf.exempt
 def dropout_request_detail(request_id):
     if not current_user.is_admin:
         return redirect(url_for('student.home'))
@@ -1111,7 +1110,7 @@ def dropout_request_detail(request_id):
 
 @admin_bp.route('/remove_students', methods=['GET', 'POST'])
 @login_required
-@exempt
+@csrf.exempt
 def remove_students():
     if not current_user.is_admin:
         return redirect(url_for('student.home'))

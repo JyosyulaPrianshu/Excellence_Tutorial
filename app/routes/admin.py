@@ -7,7 +7,7 @@ from app import db, socketio
 from app.utils import get_pending_approvals_count, generate_password_reset_token, verify_password_reset_token, send_password_reset_email, validate_pdf_file, generate_secure_filename, cleanup_old_files, get_leaderboard_for_class, assign_monthly_dues, get_fee_amount_for_class, get_current_time_ist
 import os
 from datetime import datetime, date, timedelta
-from flask_wtf.csrf import validate_csrf, CSRFError
+from flask_wtf.csrf import exempt
 import pytz
 
 admin_bp = Blueprint('admin', __name__)
@@ -15,7 +15,7 @@ admin_bp = Blueprint('admin', __name__)
 @admin_bp.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
-    if form.validate_on_submit():
+    # if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data, is_admin=True).first()
         if user and check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)
@@ -349,6 +349,7 @@ def fee_management():
 
 @admin_bp.route('/add_fee', methods=['POST'])
 @login_required
+@exempt
 def add_fee():
     if not current_user.is_admin:
         return redirect(url_for('student.home'))
@@ -380,6 +381,7 @@ def add_fee():
 
 @admin_bp.route('/confirm_payment/<int:payment_id>', methods=['POST'])
 @login_required
+@exempt
 def confirm_payment(payment_id):
     if not current_user.is_admin:
         return redirect(url_for('student.home'))
@@ -439,6 +441,7 @@ def approve():
 
 @admin_bp.route('/notify_student/<int:student_id>', methods=['POST'])
 @login_required
+@exempt
 def notify_student(student_id):
     if not current_user.is_admin:
         return redirect(url_for('student.home'))
@@ -453,6 +456,7 @@ def notify_student(student_id):
 
 @admin_bp.route('/approve_payment/<int:payment_id>', methods=['POST'])
 @login_required
+@exempt
 def approve_payment(payment_id):
     if not current_user.is_admin:
         flash('Access denied.', 'error')
@@ -473,6 +477,7 @@ def approve_payment(payment_id):
 
 @admin_bp.route('/reject_payment/<int:payment_id>', methods=['POST'])
 @login_required
+@exempt
 def reject_payment(payment_id):
     if not current_user.is_admin:
         flash('Access denied.', 'error')
@@ -536,17 +541,13 @@ def feedues():
 
 @admin_bp.route('/dues', methods=['GET', 'POST'])
 @login_required
+@exempt
 def dues_management():
     if not current_user.is_admin:
         return redirect(url_for('student.home'))
 
     # Handle add due form
     if request.method == 'POST' and 'add_due' in request.form:
-        try:
-            validate_csrf(request.form.get('csrf_token'))
-        except CSRFError:
-            flash('Invalid CSRF token.', 'danger')
-            return redirect(url_for('admin.dues_management'))
         selected_students = request.form.getlist('selected_students')
         month = request.form.get('month')
         amount = request.form.get('amount')
@@ -574,11 +575,6 @@ def dues_management():
 
     # Handle edit due form
     if request.method == 'POST' and 'edit_due' in request.form:
-        try:
-            validate_csrf(request.form.get('csrf_token'))
-        except CSRFError:
-            flash('Invalid CSRF token.', 'danger')
-            return redirect(url_for('admin.dues_management'))
         fee_id = request.form.get('fee_id')
         amount = request.form.get('edit_amount')
         month = request.form.get('edit_month')
@@ -596,11 +592,6 @@ def dues_management():
 
     # Handle delete due
     if request.method == 'POST' and 'delete_due' in request.form:
-        try:
-            validate_csrf(request.form.get('csrf_token'))
-        except CSRFError:
-            flash('Invalid CSRF token.', 'danger')
-            return redirect(url_for('admin.dues_management'))
         fee_id = request.form.get('fee_id')
         fee = Fee.query.get(fee_id)
         if fee:
@@ -613,11 +604,6 @@ def dues_management():
 
     # Handle mark as paid/unpaid
     if request.method == 'POST' and 'toggle_paid' in request.form:
-        try:
-            validate_csrf(request.form.get('csrf_token'))
-        except CSRFError:
-            flash('Invalid CSRF token.', 'danger')
-            return redirect(url_for('admin.dues_management'))
         fee_id = request.form.get('fee_id')
         fee = Fee.query.get(fee_id)
         if fee:
@@ -850,6 +836,7 @@ def test_marks_management():
 
 @admin_bp.route('/edit_mark/<int:mark_id>', methods=['GET', 'POST'])
 @login_required
+@exempt
 def edit_mark(mark_id):
     if not current_user.is_admin:
         flash('Access denied.', 'error')
@@ -875,6 +862,7 @@ def edit_mark(mark_id):
 
 @admin_bp.route('/delete_mark/<int:mark_id>', methods=['POST'])
 @login_required
+@exempt
 def delete_mark(mark_id):
     if not current_user.is_admin:
         return redirect(url_for('student.home'))
@@ -959,6 +947,7 @@ def suspicious_activity():
 
 @admin_bp.route('/trigger_monthly_dues', methods=['POST'])
 @login_required
+@exempt
 def trigger_monthly_dues():
     if not current_user.is_admin:
         return redirect(url_for('student.home'))
@@ -1065,6 +1054,7 @@ def dropouts():
 
 @admin_bp.route('/dropout/<int:request_id>', methods=['GET', 'POST'])
 @login_required
+@exempt
 def dropout_request_detail(request_id):
     if not current_user.is_admin:
         return redirect(url_for('student.home'))
@@ -1121,6 +1111,7 @@ def dropout_request_detail(request_id):
 
 @admin_bp.route('/remove_students', methods=['GET', 'POST'])
 @login_required
+@exempt
 def remove_students():
     if not current_user.is_admin:
         return redirect(url_for('student.home'))
@@ -1177,7 +1168,4 @@ def resequence_roll_numbers(student_class):
         student.roll_number = idx
     db.session.commit()
 
-# CSRF error handler
-@admin_bp.app_errorhandler(CSRFError)
-def handle_csrf_error(e):
-    return render_template('errors/csrf.html', reason=e.description), 400 
+ 

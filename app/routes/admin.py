@@ -19,7 +19,6 @@ def login():
         user = User.query.filter_by(email=form.email.data, is_admin=True).first()
         if user and check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)
-            session.permanent = True  # Enable session timeout
             return redirect(url_for('admin.home1'))
         flash('Invalid admin credentials.', 'danger')
     return render_template('shared/login.html', form=form, role='admin')

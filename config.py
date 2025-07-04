@@ -1,20 +1,13 @@
 import os
-<<<<<<< HEAD
 from dotenv import load_dotenv
 
 load_dotenv()
-=======
->>>>>>> b05f5c458adbaf582042ecaf702fbebb11efe2f6
 
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY', '2b1e7e2c-8c7e-4e2e-9b7a-1f3e4c5d6a7b')
     
-    # Use DATABASE_URL from environment for PostgreSQL
-<<<<<<< HEAD
-    SQLALCHEMY_DATABASE_URI = os.getenv('SQLALCHEMY_DATABASE_URI', 'sqlite:///app.db')
-=======
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
->>>>>>> b05f5c458adbaf582042ecaf702fbebb11efe2f6
+    # Use DATABASE_URL from environment for PostgreSQL, fallback to local SQLite for development
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or os.getenv('SQLALCHEMY_DATABASE_URI', 'sqlite:///app.db')
     if SQLALCHEMY_DATABASE_URI and SQLALCHEMY_DATABASE_URI.startswith('postgres://'):
         SQLALCHEMY_DATABASE_URI = SQLALCHEMY_DATABASE_URI.replace('postgres://', 'postgresql://', 1)
     

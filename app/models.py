@@ -91,7 +91,11 @@ class PDF(db.Model):
 class Notification(db.Model):
     __tablename__ = 'notifications'
     id = db.Column(db.Integer, primary_key=True)
+<<<<<<< HEAD
     user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=True)  # null for all students
+=======
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)  # null for all students
+>>>>>>> b05f5c458adbaf582042ecaf702fbebb11efe2f6
     message = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, default=get_current_time_ist)
     is_read = db.Column(db.Boolean, default=False)
